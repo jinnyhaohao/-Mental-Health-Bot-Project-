@@ -7,6 +7,20 @@ Mental health is a crucial aspect of well-being that is often neglected due to s
 
 ### Functionality 软件功能
 
+User survey.
+
+User registration and login.
+
+Daily mood tracking and visualization.
+
+Guided mindfulness and relaxation exercises.
+
+Access to curated mental health resources.
+
+Secure data storage and retrieval.
+
+Using their response to the bot to see the user's mood.
+
 用户问卷。
 
 用户注册和登录功能。
