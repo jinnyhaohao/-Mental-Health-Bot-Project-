@@ -19,3 +19,4 @@ Mental health is a crucial aspect of well-being that is often neglected due to s
 
 安全的数据储存和调用功能。
 
+通过用户语言来判断用户的心情。
