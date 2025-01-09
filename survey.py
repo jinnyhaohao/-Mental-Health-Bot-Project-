@@ -1,70 +1,76 @@
 class Survey:
-    def __init__(self, title):
+    def __init__(self, title, sentiment_analyzer):
         """
-        Initializes the Survey with a title, empty questions, and responses.
+        Initializes the Survey with a title, empty questions, responses, and a sentiment analyzer.
+        初始化问卷调查，包括标题、空的问题列表、响应数据和情绪分析器。
+        :param title: The title of the survey. 问卷调查的标题。
+        :param sentiment_analyzer: An instance of SentimentAnalyzer. 情绪分析器的实例。
         """
         self.title = title
         self.questions = []
         self.responses = {}
+        self.sentiment_analyzer = sentiment_analyzer
 
     def add_question(self, question):
         """
-        Adds a new question to the survey.
-        
-        :param question: The question to add.
+        Adds a question to the survey.
+        向问卷调查中添加一个问题。
+        :param question: The question to add. 要添加的问题。
         """
         if question not in self.questions:
             self.questions.append(question)
             self.responses[question] = []
         else:
             print(f"The question '{question}' already exists in the survey.")
+            print(f"问题 '{question}' 已经存在于问卷中。")
 
     def collect_response(self, question, response):
         """
         Collects a response for a specific question.
-        :param question: The question being answered.
-        :param response: The response to the question.
+        收集用户对特定问题的回答。
+        :param question: The question being answered. 用户回答的问题。
+        :param response: The response to the question. 用户的回答内容。
         """
         if question in self.questions:
             self.responses[question].append(response)
         else:
             print(f"The question '{question}' is not in the survey.")
+            print(f"问题 '{question}' 不在问卷中。")
 
-    def get_summary(self):
+    def get_user_mood(self):
         """
-        Returns a summary of the survey responses.
-        :return: A dictionary with questions and their corresponding responses.
+        Analyzes all user responses and provides a summary of moods.
+        分析所有用户的回答，并提供情绪摘要。
+        :return: A dictionary with questions and their corresponding moods.
+                 包含问题及其对应情绪的字典。
         """
-        summary = {question: len(responses) for question, responses in self.responses.items()}
-        return summary
+        moods = {}
+        for question, responses in self.responses.items():
+            if responses:
+                analyzed_moods = [self.sentiment_analyzer.analyze(resp) for resp in responses]
+                moods[question] = analyzed_moods
+            else:
+                moods[question] = "No responses yet."
+                moods[question] = "暂无回答。"
+        return moods
 
-    def display_questions(self):
-        """
-        Displays all the questions in the survey.
-        """
-        print(f"Survey Title: {self.title}")
-        print("Questions:")
-        for i, question in enumerate(self.questions, start=1):
-            print(f"{i}. {question}")
-
-# Example Usage
 if __name__ == "__main__":
-    survey = Survey("Customer Feedback Survey")
+    # Initialize the sentiment analyzer 初始化情绪分析器
+    sentiment_analyzer = SentimentAnalyzer()
+
+    # Create a survey with the sentiment analyzer 创建带有情绪分析器的问卷调查
+    survey = Survey("AI-Powered Mood Tracker Survey", sentiment_analyzer)
+
+    # Add questions 添加问题
+    survey.add_question("How are you feeling today? 今天你的心情如何？")
+    survey.add_question("What has been on your mind recently? 最近你在想些什么？")
+
+    # Collect responses 收集回答
+    survey.collect_response("How are you feeling today?", "I'm feeling great and optimistic about the future!")
+    survey.collect_response("What has been on your mind recently?", "I'm worried about upcoming deadlines.")
     
-    # Add questions
-    survey.add_question("How satisfied are you with our service?")
-    survey.add_question("Would you recommend our service to others?")
-    
-    # Collect responses
-    survey.collect_response("How satisfied are you with our service?", "Very satisfied")
-    survey.collect_response("Would you recommend our service to others?", "Yes")
-    survey.collect_response("Would you recommend our service to others?", "No")
-    
-    # Display questions
-    survey.display_questions()
-    
-    # Display summary
-    summary = survey.get_summary()
-    print("\nSurvey Summary:")
-    for question, count in summary.items():
-        print(f"{question}: {count} responses")
+    # Get and display moods 获取并显示用户情绪
+    moods = survey.get_user_mood()
+    print("\nUser Mood Analysis 用户情绪分析:")
+    for question, mood in moods.items():
+        print(f"{question}: {mood}")
